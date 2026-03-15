@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:mdcr="http://sensory.com/mdcr" viewBox="0 0 401 301" width="401" height="301">
+  <metadata>
+    <mdcr:info xmlns:mdcr="http://sensory.com/mdcr">
+      <mdcr:source format="WMF" generator="wmf2svg.js"/>
+      <mdcr:bounds left="0" top="0" right="6015" bottom="4515" inch="1440"/>
+      <mdcr:records count="13">
+        <mdcr:record tag="MDCR-{"/>
+        <mdcr:record tag="MDCR-{"/>
+        <mdcr:record tag="MDCR-}"/>
+        <mdcr:record tag="MDCR-S"/>
+        <mdcr:record tag="MDCR-{"/>
+        <mdcr:record tag="MDCR-}"/>
+        <mdcr:record tag="MDCR-{"/>
+        <mdcr:record tag="MDCR-S"/>
+        <mdcr:record tag="MDCR-}"/>
+        <mdcr:record tag="MDCR-{"/>
+        <mdcr:record tag="MDCR-}"/>
+        <mdcr:record tag="MDCR-}"/>
+        <mdcr:record tag="MDCR-S"/>
+      </mdcr:records>
+    </mdcr:info>
+  </metadata>
+  <g data-mdcr="group" class="mdcr-region">
+    <g data-mdcr="group" class="mdcr-region">
+      <path d="M222,250 C219.3,247.3 216.8,244.4 214,242 C211.4,239.8 208.9,237.9 206,236 C202.9,233.9 199.3,231.7 196,230 C193.0,228.4 190.2,227.3 187,226 C183.5,224.6 179.6,223.2 176,222 C172.6,220.9 169.3,220.0 166,219" fill="none" stroke="#000000" stroke-width="1"/>
+      <path d="M216,266 L176,249 C179.0,247.7 181.9,246.4 185,245 C188.3,243.5 191.7,241.5 195,240 C198.1,238.6 202.7,238.2 204,236 C205.2,233.8 203.7,230.0 203,227 C202.3,224.0 201.0,221.1 200,218 C199.0,214.8 198.0,211.3 197,208 L230,223 C227.0,224.3 224.0,225.5 221,227 C218.0,228.5 214.4,230.0 212,232 C209.9,233.7 207.4,235.7 207,238 C206.5,240.6 209.0,243.9 210,247 C211.0,250.2 212.0,253.8 213,257 C214.0,260.1 215.0,263.0 216,266Z" fill="#0000ff" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="0"/>
+    </g>
+    <g data-mdcr="group" class="mdcr-region">
+      <path d="M46,10 L72,31 L19,31 L46,73 L46,10Z" fill="#eeee00" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="1"/>
+      <path d="M46,10 L19,31 L72,31 L46,73 L46,10Z" fill="#00cc00" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="2"/>
+      <path d="M45,72 C44.7,75.3 43.5,78.8 44,82 C44.5,85.1 45.9,89.0 48,91 C50.0,92.9 53.2,93.9 56,94 C58.9,94.1 62.1,92.3 65,91 C68.1,89.7 71.2,87.4 74,86 C76.4,84.8 78.5,83.1 81,83 C83.8,82.9 87.2,84.4 90,86 C92.9,87.7 95.3,90.7 98,93" fill="none" stroke="#000000" stroke-width="1"/>
+      <path d="M100,85 L87,93 L97,98 L92,80 L100,85Z" fill="#00cc00" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="3"/>
+      <path d="M76,78 L71,95 L82,94 L68,79 L76,78Z" fill="#eeee00" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="4"/>
+      <path d="M54,101 L62,104 L58,82 C59.3,84.3 62.1,86.8 62,89 C61.9,91.1 59.3,93.0 58,95 C56.7,97.0 55.3,99.0 54,101Z" fill="#00cc00" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="5"/>
+      <path d="M50,80 L39,91 L37,81 L53,88 L50,80Z" fill="#eeee00" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="6"/>
+    </g>
+    <g data-mdcr="group" class="mdcr-region">
+      <path d="M181,10 L208,31 L154,31 L181,72 L181,10Z" fill="#00ff00" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="7"/>
+      <path d="M181,10 L154,31 L208,31 L181,72 L181,10Z" fill="#0000ff" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="8"/>
+      <path d="M182,72 C182.0,75.3 181.5,78.8 182,82 C182.5,85.1 183.0,89.2 185,91 C187.0,92.8 191.0,93.2 194,93 C197.0,92.8 200.2,91.3 203,90 C205.8,88.7 208.3,86.4 211,85 C213.6,83.7 216.3,81.9 219,82 C221.9,82.1 225.2,84.3 228,86 C230.8,87.7 233.3,90.0 236,92" fill="none" stroke="#000000" stroke-width="1"/>
+      <path d="M237,85 L224,93 L234,98 L229,80 L237,85Z" fill="#0000ff" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="9"/>
+      <path d="M213,78 L208,94 L219,93 L205,79 L213,78Z" fill="#00ff00" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="10"/>
+      <path d="M191,100 L199,103 L195,81 C196.3,83.3 199.1,85.8 199,88 C198.9,90.1 196.3,92.0 195,94 C193.7,96.0 192.3,98.0 191,100Z" fill="#0000ff" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="11"/>
+      <path d="M186,80 L175,91 L173,81 L189,88 L186,80Z" fill="#00ff00" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="12"/>
+    </g>
+    <g data-mdcr="group" class="mdcr-region">
+      <path d="M321,12 L349,32 L293,32 L321,71 L321,12Z" fill="#ff0000" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="13"/>
+      <path d="M321,12 L293,32 L349,32 L321,71 L321,12Z" fill="#ffff00" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="14"/>
+      <path d="M322,70 C322.0,73.3 321.3,76.9 322,80 C322.7,82.9 323.9,86.3 326,88 C328.2,89.7 332.0,90.2 335,90 C338.0,89.8 341.1,88.2 344,87 C346.8,85.8 349.2,84.2 352,83 C354.9,81.8 358.0,80.0 361,80 C364.0,80.0 367.2,81.5 370,83 C372.9,84.5 375.3,87.0 378,89" fill="none" stroke="#000000" stroke-width="1"/>
+      <path d="M379,82 L365,90 L375,95 L371,78 L379,82Z" fill="#ffff00" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="15"/>
+      <path d="M354,76 L350,91 L361,90 L346,77 L354,76Z" fill="#ff0000" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="16"/>
+      <path d="M331,98 L339,101 L335,80 C336.3,82.0 339.0,84.0 339,86 C339.0,88.0 336.3,90.0 335,92 C333.7,94.0 332.3,96.0 331,98Z" fill="#ffff00" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="17"/>
+      <path d="M327,77 L315,87 L313,78 L330,84 L327,77Z" fill="#ff0000" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="18"/>
+    </g>
+  </g>
+</svg>

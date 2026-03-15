@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Match 'em</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=19">
+</head>
+<body>
+
+<!-- Selection screen (topics + activities) -->
+<div id="select-screen" class="screen active">
+  <div id="title-text">Match 'em</div>
+  <div id="select-layout">
+    <div class="section-box topic-section">
+      <div class="section-label">Topics</div>
+      <div class="btn-row-wrapper">
+        <button class="nav-arrow nav-left" id="topic-left" aria-label="Previous topics">&#9664;</button>
+        <div class="btn-row" id="topic-row"></div>
+        <button class="nav-arrow nav-right" id="topic-right" aria-label="Next topics">&#9654;</button>
+      </div>
+    </div>
+    <div class="section-box activity-section">
+      <div class="section-label">Activities</div>
+      <div class="btn-row-wrapper">
+        <button class="nav-arrow nav-left" id="activity-left" aria-label="Previous activities">&#9664;</button>
+        <div class="btn-row" id="activity-row"></div>
+        <button class="nav-arrow nav-right" id="activity-right" aria-label="Next activities">&#9654;</button>
+      </div>
+    </div>
+  </div>
+  <a id="btn-help" href="help.html" aria-label="Help">?</a>
+  <button id="btn-settings" aria-label="Settings">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+  </button>
+  <div id="settings-panel" class="hidden">
+    <div class="settings-options">
+      <button class="scan-mode-btn" data-mode="off" aria-label="Direct">
+        <svg class="icon-pointer" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 4L12 34 19.5 26.5 25 40 29 38.5 23.5 24.5 33 24.5Z" stroke="currentColor" stroke-width="2" fill="currentColor" stroke-linejoin="round"/>
+        </svg>
+        <svg class="icon-finger" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="17" y="2" width="14" height="28" rx="7" stroke="currentColor" stroke-width="2.5" fill="none"/>
+          <circle cx="24" cy="40" r="2.5" fill="currentColor"/>
+          <circle cx="24" cy="40" r="6" stroke="currentColor" stroke-width="2" fill="none" opacity="0.5"/>
+        </svg>
+        <span class="scan-mode-label">Touch/Mouse</span>
+      </button>
+      <button class="scan-mode-btn" data-mode="1switch" aria-label="1 Switch">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="20" r="14" stroke="currentColor" stroke-width="2.5" fill="none"/>
+          <circle cx="24" cy="20" r="8" fill="currentColor" opacity="0.3"/>
+          <line x1="24" y1="34" x2="24" y2="46" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <span class="scan-mode-label">1 Switch</span>
+      </button>
+      <button class="scan-mode-btn" data-mode="2switch" aria-label="2 Switch">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="15" cy="18" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="15" cy="18" r="5.5" fill="currentColor" opacity="0.3"/>
+          <line x1="15" y1="28" x2="15" y2="38" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="33" cy="18" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="33" cy="18" r="5.5" fill="currentColor" opacity="0.3"/>
+          <line x1="33" y1="28" x2="33" y2="38" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        <span class="scan-mode-label">2 Switch</span>
+      </button>
+    </div>
+    <div id="scan-speed-row" class="hidden">
+      <svg class="speed-icon speed-slow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Slow">
+        <path d="M13 2L3 14h9l-1 10 10-12h-9l1-10z" stroke="currentColor" stroke-width="1.5" fill="currentColor" stroke-linejoin="round"/>
+      </svg>
+      <input type="range" id="scan-speed" min="500" max="5000" step="250" value="2000">
+      <svg class="speed-icon speed-fast" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Fast">
+        <path d="M13 2L3 14h9l-1 10 10-12h-9l1-10z" stroke="currentColor" stroke-width="1.5" fill="currentColor" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- Game screen -->
+<div id="game-screen" class="screen">
+  <div id="game-area">
+    <div id="game-bg"></div>
+    <div id="game-pic"></div>
+    <div id="scan-highlight"></div>
+    <div id="reward-area"></div>
+    <canvas id="fx-canvas"></canvas>
+    <button id="btn-back-game" aria-label="Back"></button>
+  </div>
+</div>
+
+<script src="matchem.js?v=24"></script>
+</body>
+</html>

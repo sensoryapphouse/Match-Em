@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:mdcr="http://sensory.com/mdcr" viewBox="0 0 400 300" width="400" height="300">
+  <metadata>
+    <mdcr:info xmlns:mdcr="http://sensory.com/mdcr">
+      <mdcr:source format="WMF" generator="wmf2svg.js"/>
+      <mdcr:bounds left="0" top="0" right="6000" bottom="4500" inch="1440"/>
+      <mdcr:records count="3">
+        <mdcr:record tag="MDCR-{"/>
+        <mdcr:record tag="MDCR-S"/>
+        <mdcr:record tag="MDCR-}"/>
+      </mdcr:records>
+    </mdcr:info>
+  </metadata>
+  <g data-mdcr="group" class="mdcr-region">
+    <ellipse cx="205.5" cy="250.5" rx="25.5" ry="25.5" fill="#0000ff" stroke="none" stroke-width="0" data-shape="0"/>
+    <polygon points="20,170 20,170 70,170 57,145 45,120 32,145 20,170" fill="#0000ff" stroke="none" stroke-width="0" fill-rule="evenodd" data-shape="1"/>
+    <polygon points="180,65 180,65 230,65 217,40 205,15 192,40 180,65" fill="#0000ff" stroke="none" stroke-width="0" fill-rule="evenodd" data-shape="2"/>
+    <polygon points="320,170 320,170 370,170 357,145 345,120 332,145 320,170" fill="#0000ff" stroke="none" stroke-width="0" fill-rule="evenodd" data-shape="3"/>
+    <ellipse cx="205.5" cy="149.5" rx="25.5" ry="25.5" fill="none" stroke="none" stroke-width="0"/>
+  </g>
+</svg>

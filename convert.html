@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Match Em - WMF to SVG Batch Converter</title>
+<script src="wmf2svg.js?v=10"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Fredoka', sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 2em;
+    color: #f5c542;
+    margin-bottom: 10px;
+  }
+
+  h2 {
+    font-size: 1.1em;
+    color: #f5c542;
+    margin: 15px 0 8px 0;
+    padding: 6px 12px;
+    background: #16213e;
+    border-radius: 6px;
+    display: inline-block;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #888;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+  }
+
+  .controls {
+    text-align: center;
+    margin: 20px 0;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  button {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.1em;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  #startBtn {
+    background: #4caf50;
+    color: white;
+  }
+
+  #startBtn:hover:not(:disabled) {
+    background: #66bb6a;
+    transform: scale(1.03);
+  }
+
+  #downloadBtn {
+    background: #2196f3;
+    color: white;
+  }
+
+  #downloadBtn:hover:not(:disabled) {
+    background: #42a5f5;
+    transform: scale(1.03);
+  }
+
+  .progress-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 15px auto;
+    background: #0f3460;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 30px;
+    position: relative;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #4caf50, #66bb6a);
+    width: 0%;
+    transition: width 0.15s;
+    border-radius: 10px;
+  }
+
+  .progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    font-size: 0.85em;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  }
+
+  .stats {
+    text-align: center;
+    margin: 10px 0;
+    color: #aaa;
+    font-size: 0.85em;
+  }
+
+  #statusLog {
+    max-width: 800px;
+    margin: 15px auto;
+    background: #0a0a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 10px;
+    height: 150px;
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 0.8em;
+    color: #8f8;
+  }
+
+  #statusLog .error {
+    color: #f66;
+  }
+
+  #statusLog .info {
+    color: #6cf;
+  }
+
+  .thumbnail-section {
+    max-width: 1200px;
+    margin: 20px auto;
+  }
+
+  .thumb-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+  }
+
+  .thumb-card {
+    width: 110px;
+    background: #16213e;
+    border-radius: 6px;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #1a3a5c;
+  }
+
+  .thumb-card .preview {
+    width: 100px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .thumb-card .preview svg {
+    max-width: 96px;
+    max-height: 76px;
+  }
+
+  .thumb-card .label {
+    font-size: 0.65em;
+    color: #aaa;
+    margin-top: 3px;
+    word-break: break-all;
+    line-height: 1.2;
+  }
+
+  .thumb-card .smooth-tag {
+    font-size: 0.6em;
+    padding: 1px 5px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-top: 2px;
+  }
+
+  .smooth-tag.yes {
+    background: #2e7d32;
+    color: #afa;
+  }
+
+  .smooth-tag.no {
+    background: #555;
+    color: #ccc;
+  }
+
+  .thumb-card.pending {
+    opacity: 0.3;
+  }
+
+  .thumb-card.done {
+    opacity: 1;
+    border-color: #4caf50;
+  }
+
+  .thumb-card.fail {
+    opacity: 1;
+    border-color: #f44;
+  }
+</style>
+</head>
+<body>
+
+<h1>Match Em - WMF to SVG Converter</h1>
+<p class="subtitle">Batch converts all 324 WMF files with border removal and optional curve smoothing</p>
+
+<div class="controls">
+  <button id="startBtn" onclick="startConversion()">Start Conversion</button>
+  <button id="downloadBtn" disabled onclick="downloadZip()">Download ZIP</button>
+</div>
+
+<div class="progress-container">
+  <div class="progress-bar" id="progressBar"></div>
+  <div class="progress-text" id="progressText">0 / 324</div>
+</div>
+
+<div class="stats" id="stats"></div>
+
+<div id="statusLog"></div>
+
+<div class="thumbnail-section" id="thumbnailSection"></div>
+
+<script>
+// ── Build the complete manifest of 324 WMF files ──
+
+const manifest = [];
+
+function addFiles(topic, prefix, nums, smooth) {
+  for (const n of nums) {
+    manifest.push({
+      topic: topic,
+      wmf: 'wmf/' + topic + '/' + prefix + n + '.wmf',
+      name: prefix + n,
+      smooth: smooth
+    });
+  }
+}
+
+function range(start, end) {
+  const r = [];
+  for (let i = start; i <= end; i++) r.push(i);
+  return r;
+}
+
+// 2 and 3 - Simple (smooth: false)
+// Files with spaces in names: "2 1" through "2 8", "3 1" through "3 9", "Shape 1 1" through "Shape 1 8", "odd 1" through "odd 8"
+(function() {
+  const topic = '2 and 3 - Simple';
+  for (let i = 1; i <= 8; i++) manifest.push({ topic, wmf: 'wmf/' + topic + '/2 ' + i + '.wmf', name: '2 ' + i, smooth: false });
+  for (let i = 1; i <= 9; i++) manifest.push({ topic, wmf: 'wmf/' + topic + '/3 ' + i + '.wmf', name: '3 ' + i, smooth: false });
+  for (let i = 1; i <= 8; i++) manifest.push({ topic, wmf: 'wmf/' + topic + '/Shape 1 ' + i + '.wmf', name: 'Shape 1 ' + i, smooth: false });
+  for (let i = 1; i <= 8; i++) manifest.push({ topic, wmf: 'wmf/' + topic + '/odd ' + i + '.wmf', name: 'odd ' + i, smooth: false });
+})();
+
+// Colours (smooth: false)
+(function() {
+  const topic = 'Colours';
+  addFiles(topic, 'circle', range(1, 9), false);
+  for (let i = 1; i <= 9; i++) manifest.push({ topic, wmf: 'wmf/' + topic + '/in line' + i + '.wmf', name: 'in line' + i, smooth: false });
+  for (let i = 1; i <= 11; i++) manifest.push({ topic, wmf: 'wmf/' + topic + '/odd line' + i + '.wmf', name: 'odd line' + i, smooth: false });
+  addFiles(topic, 'odd', range(1, 11), false);
+  addFiles(topic, 'oddT', range(1, 8), false);
+  addFiles(topic, 'triangle', range(1, 9), false);
+})();
+
+// Colours - Complex (smooth: false)
+(function() {
+  const topic = 'Colours - Complex';
+  addFiles(topic, 'Complex1', range(1, 9), false);
+  manifest.push({ topic, wmf: 'wmf/' + topic + '/Complex110.wmf', name: 'Complex110', smooth: false });
+  addFiles(topic, 'Complex2', range(1, 9), false);
+  manifest.push({ topic, wmf: 'wmf/' + topic + '/Complex210.wmf', name: 'Complex210', smooth: false });
+  addFiles(topic, 'Complex3', range(1, 9), false);
+  manifest.push({ topic, wmf: 'wmf/' + topic + '/Complex310.wmf', name: 'Complex310', smooth: false });
+  addFiles(topic, 'Complex4', range(1, 9), false);
+  addFiles(topic, 'odd1', range(1, 9), false);
+  addFiles(topic, 'odd2', range(1, 9), false);
+})();
+
+// Parts (smooth: true)
+(function() {
+  const topic = 'Parts';
+  addFiles(topic, 'a', range(1, 9), true);
+  addFiles(topic, 'k', range(1, 8), true);
+  addFiles(topic, 't', range(1, 8), true);
+})();
+
+// Pictures (mixed smooth)
+(function() {
+  const topic = 'Pictures';
+  addFiles(topic, 'pic1', range(1, 9), true);
+  addFiles(topic, 'pic2', range(1, 9), true);
+  addFiles(topic, 'pic3', range(1, 9), true);
+  addFiles(topic, 'pic4', range(1, 9), false);
+  addFiles(topic, 'pic5', range(1, 9), false);
+})();
+
+// Shapes I (smooth: false)
+(function() {
+  const topic = 'Shapes I';
+  addFiles(topic, 'shape1', range(1, 9), false);
+  addFiles(topic, 'shape2', range(1, 9), false);
+  addFiles(topic, 'shape3', range(1, 9), false);
+})();
+
+// Shapes II (smooth: false)
+(function() {
+  const topic = 'Shapes II';
+  addFiles(topic, 'Shape1', range(1, 9), false);
+  addFiles(topic, 'Shape2', range(1, 9), false);
+  addFiles(topic, 'odd1', range(1, 9), false);
+  addFiles(topic, 'odd2', range(1, 8), false);
+  addFiles(topic, 'odd3', range(1, 8), false);
+})();
+
+// Silhouette (smooth: true)
+(function() {
+  const topic = 'Silhouette';
+  for (let i = 1; i <= 9; i++) manifest.push({ topic, wmf: 'wmf/' + topic + '/ab1 ' + i + '.wmf', name: 'ab1 ' + i, smooth: true });
+  for (let i = 1; i <= 6; i++) manifest.push({ topic, wmf: 'wmf/' + topic + '/ab2 ' + i + '.wmf', name: 'ab2 ' + i, smooth: true });
+  addFiles(topic, 'ap', range(1, 7), true);
+  addFiles(topic, 'bl', range(1, 6), true);
+  addFiles(topic, 'd', range(1, 9), true);
+})();
+
+console.log('Manifest total:', manifest.length, 'files');
+
+// ── removeBorderRects ──
+
+function removeBorderRects(svgEl) {
+  const vb = svgEl.viewBox.baseVal;
+  if (!vb || vb.width <= 0 || vb.height <= 0) return;
+  const allRects = svgEl.querySelectorAll('rect');
+  const toRemove = [];
+  for (const el of allRects) {
+    const x = parseFloat(el.getAttribute('x') || 0);
+    const y = parseFloat(el.getAttribute('y') || 0);
+    const w = parseFloat(el.getAttribute('width') || 0);
+    const h = parseFloat(el.getAttribute('height') || 0);
+    const fill = el.getAttribute('fill');
+    if (x < vb.width * 0.05 && y < vb.height * 0.05 &&
+        w > vb.width * 0.9 && h > vb.height * 0.9 &&
+        (!fill || fill === 'none')) {
+      toRemove.push(el);
+    }
+  }
+  toRemove.forEach(el => el.remove());
+}
+
+// ── smoothCurves ──
+
+function smoothCurves(svgEl) {
+  const CORNER_ANGLE = 90;
+  const MIN_POINTS = 6;
+  const LONG_SEG_FACTOR = 4;
+
+  function parsePoints(attr) {
+    return attr.trim().split(/\s+/)
+      .filter(s => s.includes(','))
+      .map(s => { const [x, y] = s.split(',').map(Number); return { x, y }; });
+  }
+
+  function angleDeg(p0, p1, p2) {
+    const dx1 = p1.x - p0.x, dy1 = p1.y - p0.y;
+    const dx2 = p2.x - p1.x, dy2 = p2.y - p1.y;
+    const a1 = Math.atan2(dy1, dx1);
+    const a2 = Math.atan2(dy2, dx2);
+    let diff = Math.abs(a2 - a1);
+    if (diff > Math.PI) diff = 2 * Math.PI - diff;
+    return diff * 180 / Math.PI;
+  }
+
+  function ptLineDist(p, a, b) {
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const lenSq = dx * dx + dy * dy;
+    if (lenSq === 0) return Math.hypot(p.x - a.x, p.y - a.y);
+    const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / lenSq));
+    return Math.hypot(p.x - (a.x + t * dx), p.y - (a.y + t * dy));
+  }
+
+  function isRunStraight(pts, threshold) {
+    if (pts.length <= 2) return true;
+    const first = pts[0], last = pts[pts.length - 1];
+    const chordLen = Math.hypot(last.x - first.x, last.y - first.y);
+    if (chordLen < 1) {
+      if (pts.length > 4) {
+        let maxDist = 0;
+        for (let i = 1; i < pts.length - 1; i++) {
+          const d = Math.hypot(pts[i].x - first.x, pts[i].y - first.y);
+          if (d > maxDist) maxDist = d;
+        }
+        if (maxDist > threshold) return false;
+      }
+      return true;
+    }
+    let maxDev = 0;
+    for (let i = 1; i < pts.length - 1; i++) {
+      const d = ptLineDist(pts[i], first, last);
+      if (d > maxDev) maxDev = d;
+    }
+    if (maxDev <= threshold) return true;
+    return false;
+  }
+
+  function subsampleRun(pts, targetSegLen) {
+    if (pts.length <= 2) return pts;
+    const cumLen = [0];
+    for (let i = 1; i < pts.length; i++) {
+      cumLen.push(cumLen[i - 1] + Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y));
+    }
+    const totalLen = cumLen[pts.length - 1];
+    if (totalLen < targetSegLen * 2) return pts;
+    const numSegs = Math.max(2, Math.round(totalLen / targetSegLen));
+    const step = totalLen / numSegs;
+    const result = [pts[0]];
+    let nextTarget = step;
+    for (let i = 1; i < pts.length; i++) {
+      while (nextTarget <= cumLen[i] && result.length < numSegs) {
+        const segStart = cumLen[i - 1], segEnd = cumLen[i];
+        const t = (segEnd > segStart) ? (nextTarget - segStart) / (segEnd - segStart) : 0;
+        result.push({
+          x: Math.round(pts[i - 1].x + (pts[i].x - pts[i - 1].x) * t),
+          y: Math.round(pts[i - 1].y + (pts[i].y - pts[i - 1].y) * t)
+        });
+        nextTarget += step;
+      }
+    }
+    result.push(pts[pts.length - 1]);
+    return result;
+  }
+
+  function crBezier(p0, p1, p2, p3) {
+    function knot(ti, a, b) {
+      const dx = b.x - a.x, dy = b.y - a.y;
+      return ti + Math.sqrt(Math.sqrt(dx * dx + dy * dy));
+    }
+    const t0 = 0;
+    const t1 = knot(t0, p0, p1);
+    const t2 = knot(t1, p1, p2);
+    const t3 = knot(t2, p2, p3);
+    const dt10 = t1 - t0 || 1, dt21 = t2 - t1 || 1;
+    const dt20 = t2 - t0 || 1, dt32 = t3 - t2 || 1, dt31 = t3 - t1 || 1;
+    const m1x = dt21 * ((p1.x-p0.x)/dt10 - (p2.x-p0.x)/dt20 + (p2.x-p1.x)/dt21);
+    const m1y = dt21 * ((p1.y-p0.y)/dt10 - (p2.y-p0.y)/dt20 + (p2.y-p1.y)/dt21);
+    const m2x = dt21 * ((p2.x-p1.x)/dt21 - (p3.x-p1.x)/dt31 + (p3.x-p2.x)/dt32);
+    const m2y = dt21 * ((p2.y-p1.y)/dt21 - (p3.y-p1.y)/dt31 + (p3.y-p2.y)/dt32);
+    const cp1x = p1.x + m1x / 3;
+    const cp1y = p1.y + m1y / 3;
+    const cp2x = p2.x - m2x / 3;
+    const cp2y = p2.y - m2y / 3;
+    return ` C${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${p2.x},${p2.y}`;
+  }
+
+  function computeTargetSegLen(pts) {
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (const p of pts) {
+      if (p.x < minX) minX = p.x; if (p.x > maxX) maxX = p.x;
+      if (p.y < minY) minY = p.y; if (p.y > maxY) maxY = p.y;
+    }
+    const maxDim = Math.max(maxX - minX, maxY - minY);
+    return Math.max(8, maxDim * 0.18);
+  }
+
+  function straightThreshold(pts) {
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (const p of pts) {
+      if (p.x < minX) minX = p.x; if (p.x > maxX) maxX = p.x;
+      if (p.y < minY) minY = p.y; if (p.y > maxY) maxY = p.y;
+    }
+    return Math.max(1.5, Math.max(maxX - minX, maxY - minY) * 0.03);
+  }
+
+  function emitCurveRun(sp) {
+    let d = '';
+    for (let j = 0; j < sp.length - 1; j++) {
+      const p1 = sp[j], p2 = sp[j + 1];
+      let p0 = j > 0 ? sp[j - 1] : { x: 2 * p1.x - p2.x, y: 2 * p1.y - p2.y };
+      let p3 = j + 2 < sp.length ? sp[j + 2] : { x: 2 * p2.x - p1.x, y: 2 * p2.y - p1.y };
+      d += crBezier(p0, p1, p2, p3);
+    }
+    return d;
+  }
+
+  function splitAtInflections(sp) {
+    if (sp.length <= 3) return [sp];
+    const INFLECT_ANGLE = 90;
+    const splits = [0];
+    for (let i = 1; i < sp.length - 1; i++) {
+      const ang = angleDeg(sp[i - 1], sp[i], sp[i + 1]);
+      if (ang > INFLECT_ANGLE) splits.push(i);
+    }
+    splits.push(sp.length - 1);
+    if (splits.length <= 2) return [sp];
+    const result = [];
+    for (let k = 0; k < splits.length - 1; k++) {
+      result.push(sp.slice(splits[k], splits[k + 1] + 1));
+    }
+    return result;
+  }
+
+  function buildPath(pts, closed) {
+    const n = pts.length;
+    const targetSegLen = computeTargetSegLen(pts);
+    const straightThr = straightThreshold(pts);
+
+    const allAngles = [];
+    for (let i = 0; i < n; i++) {
+      if (!closed && (i === 0 || i === n - 1)) continue;
+      const prev = pts[(i - 1 + n) % n];
+      const next = pts[(i + 1) % n];
+      allAngles.push(angleDeg(prev, pts[i], next));
+    }
+    allAngles.sort((a, b) => a - b);
+    const medianAngle = allAngles.length > 0
+      ? allAngles[Math.floor(allAngles.length / 2)] : 0;
+    const effectiveCornerAngle = medianAngle < 8 ? 60 : CORNER_ANGLE;
+
+    const isCornerPt = new Array(n).fill(false);
+    for (let i = 0; i < n; i++) {
+      if (!closed && (i === 0 || i === n - 1)) { isCornerPt[i] = true; continue; }
+      const prev = pts[(i - 1 + n) % n];
+      const next = pts[(i + 1) % n];
+      if (angleDeg(prev, pts[i], next) > effectiveCornerAngle) isCornerPt[i] = true;
+    }
+
+    const totalSegs = closed ? n : n - 1;
+    const segLens = [];
+    for (let i = 0; i < totalSegs; i++) {
+      segLens.push(Math.hypot(pts[(i + 1) % n].x - pts[i].x, pts[(i + 1) % n].y - pts[i].y));
+    }
+    const sorted = segLens.filter(l => l > 0).sort((a, b) => a - b);
+    const median = sorted.length > 0 ? sorted[Math.floor(sorted.length / 2)] : 1;
+    const longThresh = median * LONG_SEG_FACTOR;
+    for (let i = 0; i < segLens.length; i++) {
+      if (segLens[i] > longThresh) {
+        isCornerPt[i] = true;
+        isCornerPt[(i + 1) % n] = true;
+      }
+    }
+
+    const corners = [];
+    for (let i = 0; i < n; i++) {
+      if (isCornerPt[i]) corners.push(i);
+    }
+
+    if (corners.length === 0) {
+      const runPts = closed ? [...pts, pts[0]] : pts.slice();
+      const sp = subsampleRun(runPts, targetSegLen);
+      if (closed && sp.length > 2) {
+        const csp = sp.slice(0, -1);
+        const m = csp.length;
+        let d = `M${csp[0].x},${csp[0].y}`;
+        for (let j = 0; j < m; j++) {
+          d += crBezier(csp[(j - 1 + m) % m], csp[j], csp[(j + 1) % m], csp[(j + 2) % m]);
+        }
+        return d + 'Z';
+      }
+      let d = `M${sp[0].x},${sp[0].y}`;
+      return d + emitCurveRun(sp);
+    }
+
+    const runs = [];
+    for (let ci = 0; ci < corners.length; ci++) {
+      const start = corners[ci];
+      const end = corners[(ci + 1) % corners.length];
+      if (!closed && ci === corners.length - 1) break;
+      const runPts = [];
+      let idx = start;
+      for (let safety = 0; safety <= n; safety++) {
+        runPts.push(pts[idx]);
+        if (idx === end && runPts.length > 1) break;
+        idx = closed ? (idx + 1) % n : idx + 1;
+        if (!closed && idx >= n) break;
+      }
+      runs.push(runPts);
+    }
+
+    const simplified = runs.map(r =>
+      isRunStraight(r, straightThr) ? [r[0], r[r.length - 1]] : subsampleRun(r, targetSegLen)
+    );
+
+    let d = `M${simplified[0][0].x},${simplified[0][0].y}`;
+    for (let ri = 0; ri < simplified.length; ri++) {
+      const sp = simplified[ri];
+      if (sp.length <= 2) {
+        for (let k = 1; k < sp.length; k++) {
+          d += ` L${sp[k].x},${sp[k].y}`;
+        }
+      } else {
+        const subRuns = splitAtInflections(sp);
+        for (const sr of subRuns) {
+          if (sr.length <= 2) {
+            for (let k = 1; k < sr.length; k++) {
+              d += ` L${sr[k].x},${sr[k].y}`;
+            }
+          } else {
+            d += emitCurveRun(sr);
+          }
+        }
+      }
+    }
+    if (closed) d += 'Z';
+    return d;
+  }
+
+  function replaceElement(el, closed) {
+    const ptsAttr = el.getAttribute('points');
+    if (!ptsAttr) return;
+    const pts = parsePoints(ptsAttr);
+    if (pts.length < MIN_POINTS) return;
+    while (closed && pts.length > 1 &&
+        pts[0].x === pts[pts.length - 1].x && pts[0].y === pts[pts.length - 1].y) {
+      pts.pop();
+    }
+    for (let di = pts.length - 1; di > 0; di--) {
+      if (pts[di].x === pts[di - 1].x && pts[di].y === pts[di - 1].y) {
+        pts.splice(di, 1);
+      }
+    }
+    const vb = svgEl.viewBox?.baseVal;
+    if (vb && vb.width > 0 && vb.height > 0) {
+      let mnX = Infinity, mxX = -Infinity, mnY = Infinity, mxY = -Infinity;
+      for (const p of pts) {
+        if (p.x < mnX) mnX = p.x; if (p.x > mxX) mxX = p.x;
+        if (p.y < mnY) mnY = p.y; if (p.y > mxY) mxY = p.y;
+      }
+      const minDim = Math.min(mxX - mnX, mxY - mnY);
+      const svgMaxDim = Math.max(vb.width, vb.height);
+      if (minDim < svgMaxDim * 0.015) {
+        let d = `M${pts[0].x},${pts[0].y}`;
+        for (let i = 1; i < pts.length; i++) d += ` L${pts[i].x},${pts[i].y}`;
+        if (closed) d += 'Z';
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', d);
+        for (const attr of el.attributes) {
+          if (attr.name !== 'points') path.setAttribute(attr.name, attr.value);
+        }
+        el.parentNode.replaceChild(path, el);
+        return;
+      }
+    }
+    const d = buildPath(pts, closed);
+    if (!d) return;
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', d);
+    for (const attr of el.attributes) {
+      if (attr.name !== 'points') {
+        path.setAttribute(attr.name, attr.value);
+      }
+    }
+    el.parentNode.replaceChild(path, el);
+  }
+
+  Array.from(svgEl.querySelectorAll('polygon')).forEach(el => replaceElement(el, true));
+  Array.from(svgEl.querySelectorAll('polyline')).forEach(el => replaceElement(el, false));
+}
+
+// ── Conversion pipeline ──
+
+async function convertOne(entry) {
+  const svgText = await wmfToSvg(entry.wmf);
+  const wrapper = document.createElement('div');
+  wrapper.style.cssText = 'position:absolute;top:-9999px;left:-9999px;width:400px;height:300px';
+  wrapper.innerHTML = svgText;
+  document.body.appendChild(wrapper);
+  try {
+    const svgEl = wrapper.querySelector('svg');
+    removeBorderRects(svgEl);
+    if (entry.smooth) smoothCurves(svgEl);
+    return new XMLSerializer().serializeToString(svgEl);
+  } finally {
+    document.body.removeChild(wrapper);
+  }
+}
+
+// ── UI & state ──
+
+let zip = null;
+let completed = 0;
+let errors = 0;
+let startTime = 0;
+
+function log(msg, cls) {
+  const el = document.getElementById('statusLog');
+  const line = document.createElement('div');
+  if (cls) line.className = cls;
+  line.textContent = msg;
+  el.appendChild(line);
+  el.scrollTop = el.scrollHeight;
+}
+
+function updateProgress() {
+  const pct = (completed / manifest.length) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressText').textContent = completed + ' / ' + manifest.length;
+
+  const elapsed = (Date.now() - startTime) / 1000;
+  const rate = completed / elapsed;
+  const remaining = rate > 0 ? Math.round((manifest.length - completed) / rate) : '?';
+  document.getElementById('stats').textContent =
+    `Elapsed: ${elapsed.toFixed(1)}s | Rate: ${rate.toFixed(1)} files/s | ` +
+    `Remaining: ~${remaining}s | Errors: ${errors}`;
+}
+
+function buildThumbnailGrid() {
+  const section = document.getElementById('thumbnailSection');
+  section.innerHTML = '';
+
+  const topics = [];
+  const topicMap = {};
+  for (let i = 0; i < manifest.length; i++) {
+    const entry = manifest[i];
+    if (!topicMap[entry.topic]) {
+      topicMap[entry.topic] = [];
+      topics.push(entry.topic);
+    }
+    topicMap[entry.topic].push(i);
+  }
+
+  for (const topic of topics) {
+    const heading = document.createElement('h2');
+    heading.textContent = topic;
+    section.appendChild(heading);
+
+    const grid = document.createElement('div');
+    grid.className = 'thumb-grid';
+
+    for (const idx of topicMap[topic]) {
+      const entry = manifest[idx];
+      const card = document.createElement('div');
+      card.className = 'thumb-card pending';
+      card.id = 'thumb-' + idx;
+
+      const preview = document.createElement('div');
+      preview.className = 'preview';
+      preview.id = 'preview-' + idx;
+
+      const label = document.createElement('div');
+      label.className = 'label';
+      label.textContent = entry.name;
+
+      const tag = document.createElement('span');
+      tag.className = 'smooth-tag ' + (entry.smooth ? 'yes' : 'no');
+      tag.textContent = entry.smooth ? 'smooth' : 'no smooth';
+
+      card.appendChild(preview);
+      card.appendChild(label);
+      card.appendChild(tag);
+      grid.appendChild(card);
+    }
+
+    section.appendChild(grid);
+  }
+}
+
+async function startConversion() {
+  const startBtn = document.getElementById('startBtn');
+  const downloadBtn = document.getElementById('downloadBtn');
+  startBtn.disabled = true;
+  downloadBtn.disabled = true;
+
+  zip = new JSZip();
+  completed = 0;
+  errors = 0;
+  startTime = Date.now();
+
+  document.getElementById('statusLog').innerHTML = '';
+  buildThumbnailGrid();
+  updateProgress();
+
+  log('Starting conversion of ' + manifest.length + ' files...', 'info');
+
+  for (let i = 0; i < manifest.length; i++) {
+    const entry = manifest[i];
+    const card = document.getElementById('thumb-' + i);
+    const preview = document.getElementById('preview-' + i);
+
+    try {
+      log('Converting: ' + entry.wmf + (entry.smooth ? ' [smooth]' : ''));
+      const svgResult = await convertOne(entry);
+
+      // Add to ZIP: wmf/X/name.wmf -> svg/X/name.svg
+      const svgPath = entry.wmf.replace(/^wmf\//, 'svg/').replace(/\.wmf$/, '.svg');
+      zip.file(svgPath, svgResult);
+
+      // Show thumbnail
+      preview.innerHTML = svgResult;
+      const thumbSvg = preview.querySelector('svg');
+      if (thumbSvg) {
+        thumbSvg.removeAttribute('width');
+        thumbSvg.removeAttribute('height');
+        thumbSvg.style.maxWidth = '96px';
+        thumbSvg.style.maxHeight = '76px';
+      }
+      card.className = 'thumb-card done';
+    } catch (err) {
+      errors++;
+      log('ERROR: ' + entry.wmf + ' - ' + err.message, 'error');
+      card.className = 'thumb-card fail';
+      preview.innerHTML = '<span style="color:#f44;font-size:0.7em;">Error</span>';
+    }
+
+    completed++;
+    updateProgress();
+  }
+
+  const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+  log('', '');
+  log('Conversion complete! ' + (manifest.length - errors) + '/' + manifest.length + ' succeeded in ' + elapsed + 's', 'info');
+  if (errors > 0) {
+    log(errors + ' file(s) had errors.', 'error');
+  }
+
+  downloadBtn.disabled = false;
+  startBtn.disabled = false;
+}
+
+function downloadZip() {
+  if (!zip) return;
+  log('Generating ZIP file...', 'info');
+  document.getElementById('downloadBtn').disabled = true;
+
+  zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } })
+    .then(function(blob) {
+      saveAs(blob, 'matchem-svg.zip');
+      log('ZIP download started! Size: ' + (blob.size / 1024 / 1024).toFixed(2) + ' MB', 'info');
+      document.getElementById('downloadBtn').disabled = false;
+    })
+    .catch(function(err) {
+      log('ZIP generation failed: ' + err.message, 'error');
+      document.getElementById('downloadBtn').disabled = false;
+    });
+}
+</script>
+
+</body>
+</html>

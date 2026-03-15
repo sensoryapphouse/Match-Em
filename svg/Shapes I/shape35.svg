@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:mdcr="http://sensory.com/mdcr" viewBox="0 0 400 301" width="400" height="301">
+  <metadata>
+    <mdcr:info xmlns:mdcr="http://sensory.com/mdcr">
+      <mdcr:source format="WMF" generator="wmf2svg.js"/>
+      <mdcr:bounds left="0" top="0" right="6000" bottom="4515" inch="1440"/>
+      <mdcr:records count="4">
+        <mdcr:record tag="MDCR-{"/>
+        <mdcr:record tag="MDCR-S"/>
+        <mdcr:record tag="MDCR-}"/>
+        <mdcr:record tag="MDCR-S"/>
+      </mdcr:records>
+    </mdcr:info>
+  </metadata>
+  <g data-mdcr="group" class="mdcr-region">
+    <polygon points="246,225 223,251 217,286 193,262 160,256 183,230 189,195 213,219 246,225" fill="#7fff00" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="0"/>
+    <polygon points="99,21 70,82 99,112 42,82 13,112 42,51 13,21 70,51 99,21" fill="#ff0000" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="1"/>
+    <polygon points="179,51 156,77 150,112 126,88 93,82 116,56 122,21 146,45 179,51" fill="#7fff00" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="2"/>
+    <polygon points="193,50 216,76 222,111 246,87 279,81 256,55 250,20 226,44 193,50" fill="#ff0000" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="3"/>
+    <polygon points="379,21 350,51 379,112 350,82 293,112 322,82 293,21 322,51 379,21" fill="#7fff00" stroke="#000000" stroke-width="1" fill-rule="evenodd" data-shape="4"/>
+  </g>
+</svg>
